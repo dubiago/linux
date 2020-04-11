@@ -1,0 +1,24 @@
+#!/bin/bash
+#Built for RedHat variants
+#Assumes that current version RPM is going to be squirreled away in /root, away  
+from prying children
+TERM=xterm
+OLD=$(ls /root | grep plexmediaserver)
+CURRENT=$(wget -cq https://plex.tv/pms/downloads/5.json -O - | jq -r '.[].Linux..
+releases[]? | select(.distro=="redhat") | select(.build=="linux-x86_64").url')
+VERSION=$(echo $CURRENT | cut -d"-" -f4 | cut -d"/" -f2)
+NEW=$(echo $CURRENT | cut -d"/" -f7)
+if [[ "$OLD" != "$NEW" ]] || [[ "$OLD" == "" ]]; then
+        wget $CURRENT -O /root/$NEW
+        systemctl stop plexmediaserver
+        rpm -e plexmediaserver
+        rpm -i /root/$NEW
+        if [[ "$OLD" != "" ]]; then
+                rm /root/$OLD
+        fi
+        systemctl enable plexmediaserver
+        echo "[$(date '+%Y-%m-%d %H:%M:%S')]: Plex Media Server has been updatedd
+ to $VERSION" >> /var/log/plexupdates
+    else
+        echo "[$(date '+%Y-%m-%d %H:%M:%S')]: Plex Media Server is currently up--
+to-date" >> /var/log/plexupdates
