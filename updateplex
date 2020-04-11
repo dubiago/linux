@@ -19,6 +19,6 @@ if [[ "$OLD" != "$NEW" ]] || [[ "$OLD" == "" ]]; then
         echo "[$(date '+%Y-%m-%d %H:%M:%S')]: Plex Media Server has been updatedd
  to $VERSION" >> /var/log/plexupdates
     else
-        echo "[$(date '+%Y-%m-%d %H:%M:%S')]: Plex Media Server is currently up--
+        echo "[$(date '+%Y-%m-%d %H:%M:%S')]: Plex Media Server is currently up-
 to-date" >> /var/log/plexupdates
 fi
