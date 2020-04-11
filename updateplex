@@ -1,11 +1,9 @@
 #!/bin/bash
 #Automatic Plex Media Server updates, built for RedHat variants
-#Assumes that current version RPM is going to be squirreled away in /root, away  
-from prying children
+#Assumes that current version RPM is going to be squirreled away in /root, away from prying children
 TERM=xterm
 OLD=$(ls /root | grep plexmediaserver)
-CURRENT=$(wget -cq https://plex.tv/pms/downloads/5.json -O - | jq -r '.[].Linux..
-releases[]? | select(.distro=="redhat") | select(.build=="linux-x86_64").url')
+CURRENT=$(wget -cq https://plex.tv/pms/downloads/5.json -O - | jq -r '.[].Linux.releases[]? | select(.distro=="redhat") | select(.build=="linux-x86_64").url')
 VERSION=$(echo $CURRENT | cut -d"-" -f4 | cut -d"/" -f2)
 NEW=$(echo $CURRENT | cut -d"/" -f7)
 if [[ "$OLD" != "$NEW" ]] || [[ "$OLD" == "" ]]; then
