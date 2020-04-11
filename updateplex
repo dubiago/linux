@@ -1,5 +1,5 @@
 #!/bin/bash
-#Built for RedHat variants
+#Automatic Plex Media Server updates, built for RedHat variants
 #Assumes that current version RPM is going to be squirreled away in /root, away  
 from prying children
 TERM=xterm
@@ -22,3 +22,4 @@ if [[ "$OLD" != "$NEW" ]] || [[ "$OLD" == "" ]]; then
     else
         echo "[$(date '+%Y-%m-%d %H:%M:%S')]: Plex Media Server is currently up--
 to-date" >> /var/log/plexupdates
+fi
