@@ -16,7 +16,7 @@ if [[ "$OLD" != "$NEW" ]] || [[ "$OLD" == "" ]]; then
                 rm /root/$OLD
         fi
         systemctl enable plexmediaserver
-        echo "[$(date '+%Y-%m-%d %H:%M:%S')]: Plex Media Server has been updatedd
+        echo "[$(date '+%Y-%m-%d %H:%M:%S')]: Plex Media Server has been updated
  to $VERSION" >> /var/log/plexupdates
     else
         echo "[$(date '+%Y-%m-%d %H:%M:%S')]: Plex Media Server is currently up-
