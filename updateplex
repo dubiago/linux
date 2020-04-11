@@ -1,6 +1,7 @@
 #!/bin/bash
 #Automatic Plex Media Server updates, built for RedHat variants
 #Assumes that current version RPM is going to be squirreled away in /root, away from prying children
+#Requires jq to be installed for JSON parsing
 TERM=xterm
 OLD=$(ls /root | grep plexmediaserver)
 CURRENT=$(wget -cq https://plex.tv/pms/downloads/5.json -O - | jq -r '.[].Linux.releases[]? | select(.distro=="redhat") | select(.build=="linux-x86_64").url')
