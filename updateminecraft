@@ -1,0 +1,22 @@
+#!/bin/bash
+TERM=xterm
+JAR_DIR="/home/minecraft"
+RUNNING=$(unzip -p /home/minecraft/server.jar version.json | jq -r '.name')
+JSON_RESP=$(wget -cq https://launchermeta.mojang.com/mc/game/version_manifest.json -O -)
+CURRENT_URL=$(echo $JSON_RESP | jq '[.versions[] | select(.type=="release")][0].url')
+CURRENT=$(echo $JSON_RESP | jq -r '[.versions[] | select(.type=="release")][0].id')
+TMP=$(echo $CURRENT_URL | sed -e 's/^"//' -e 's/"$//')
+CURRENT_VERSION=$(wget -cq $TMP -O - | jq -r '.downloads.server.url')
+
+echo "Running: $RUNNING"
+echo "Current: $CURRENT"
+if [[ "$CURRENT" != "$RUNNING" ]]; then
+        echo "Update Required"
+        systemctl stop minecraft
+        wget $CURRENT_VERSION -O "$JAR_DIR/server.jar"
+        systemctl start minecraft
+        echo "[$(date '+%Y-%m-%d %H:%M:%S')]: Minecraft has been updated to $CURRENT" >> /var/log/minecraftupdates
+else
+        echo "No Update Required"
+        echo "[$(date '+%Y-%m-%d %H:%M:%S')]: Minecraft is currently up-to-date" >> /var/log/minecraftupdates
+fi
