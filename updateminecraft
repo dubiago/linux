@@ -1,7 +1,7 @@
 #!/bin/bash
 TERM=xterm
 JAR_DIR="/home/minecraft"
-RUNNING=$(unzip -p /home/minecraft/server.jar version.json | jq -r '.name')
+RUNNING=$(unzip -p $JAR_DIR/server.jar version.json | jq -r '.name')
 JSON_RESP=$(wget -cq https://launchermeta.mojang.com/mc/game/version_manifest.json -O -)
 CURRENT_URL=$(echo $JSON_RESP | jq '[.versions[] | select(.type=="release")][0].url')
 CURRENT=$(echo $JSON_RESP | jq -r '[.versions[] | select(.type=="release")][0].id')
