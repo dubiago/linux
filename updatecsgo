@@ -1,5 +1,5 @@
-#Assumes rcon is installed and a [csgo] entry is in .rconrc for whatever user runs this
 #!/bin/bash
+#Assumes rcon is installed and a [csgo] entry is in .rconrc for whatever user runs this
 BASE_DIR="/home/steam"
 CSGO_DIR="/home/steam/csgo"
 API_URL="https://api.steampowered.com/ISteamApps/UpToDateCheck/v1?appid=730&version="
