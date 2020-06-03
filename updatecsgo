@@ -1,4 +1,4 @@
-#Assumes rcon is installed and a [csgo] entry is in .rconrc
+#Assumes rcon is installed and a [csgo] entry is in .rconrc for whatever user runs this
 #!/bin/bash
 BASE_DIR="/home/steam"
 CSGO_DIR="/home/steam/csgo"
