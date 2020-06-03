@@ -1,24 +1,28 @@
 #!/bin/bash
-#Automatic Plex Media Server updates, built for RedHat variants
+#Built for RedHat variants
 #Assumes that current version RPM is going to be squirreled away in /root, away from prying children
-#Requires jq to be installed for JSON parsing
 TERM=xterm
-OLD=$(ls /root | grep plexmediaserver)
-CURRENT=$(wget -cq https://plex.tv/pms/downloads/5.json -O - | jq -r '.[].Linux.releases[]? | select(.distro=="redhat") | select(.build=="linux-x86_64").url')
-VERSION=$(echo $CURRENT | cut -d"-" -f4 | cut -d"/" -f2)
-NEW=$(echo $CURRENT | cut -d"/" -f7)
-if [[ "$OLD" != "$NEW" ]] || [[ "$OLD" == "" ]]; then
-        wget $CURRENT -O /root/$NEW
+URL="https://plex.tv/pms/downloads/5.json"
+RPM=$(ls /root | grep plexmediaserver)
+RUNNING=$(ps -ef | grep com.plexapp.system | grep server-version | cut -d" " -f25)
+JSON_RESP=$(wget -cq $URL -O -)
+PLEX_URL=$(echo $JSON_RESP | jq -r '.[].Linux.releases[]? | select(.distro=="redhat") | select(.build=="linux-x86_64").url')
+NEW=$(echo $PLEX_URL | cut -d"/" -f7)
+CURRENT=$(echo $JSON_RESP | jq -r '.computer[] | select(.id=="linux").version')
+echo "Running: $RUNNING"
+echo "Current: $CURRENT"
+if [[ "$RUNNING" != "$CURRENT" && "$CURRENT" != "" ]] || [[ "$RUNNING" == "" ]]; then
+        echo "Update Required"
+        wget $PLEX_URL -O /root/$NEW
         systemctl stop plexmediaserver
         rpm -e plexmediaserver
         rpm -i /root/$NEW
-        if [[ "$OLD" != "" ]]; then
-                rm /root/$OLD
+        if [[ "$RPM" != "" ]]; then
+                rm /root/$RPM
         fi
         systemctl enable plexmediaserver
-        echo "[$(date '+%Y-%m-%d %H:%M:%S')]: Plex Media Server has been updated
- to $VERSION" >> /var/log/plexupdates
+        echo "[$(date '+%Y-%m-%d %H:%M:%S')]: Plex Media Server has been updated to $CURRENT" >> /var/log/plexupdates
     else
-        echo "[$(date '+%Y-%m-%d %H:%M:%S')]: Plex Media Server is currently up-
-to-date" >> /var/log/plexupdates
+        echo "No Update Required"
+        echo "[$(date '+%Y-%m-%d %H:%M:%S')]: Plex Media Server is currently up-to-date" >> /var/log/plexupdates
 fi
