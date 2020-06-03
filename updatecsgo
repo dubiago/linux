@@ -1,0 +1,20 @@
+#Assumes rcon is installed and a [csgo] entry is in .rconrc
+#!/bin/bash
+BASE_DIR="/home/steam"
+CSGO_DIR="/home/steam/csgo"
+API_URL="https://api.steampowered.com/ISteamApps/UpToDateCheck/v1?appid=730&version="
+RUNNING=$(rcon -s csgo version | grep version | grep Exe | cut -d" " -f 3 | tr -d .)
+CURRENT=$(wget -cq $API_URL -O - | jq -r '.[].required_version')
+
+echo "Running: $RUNNING"
+echo "Current: $CURRENT"
+if [[ "$CURRENT" != "$RUNNING" ]]; then
+        echo "Update Required"
+        systemctl stop csgo
+        $BASE_DIR/steamcmd.sh +login anonymous +force_install_dir $CSGO_DIR +app_update 740 validate +quit
+        systemctl start csgo
+        echo "[$(date '+%Y-%m-%d %H:%M:%S')]: CS:GO DS has been updated to $CURRENT" >> /var/log/csgodsupdates
+else
+        echo "No Update Required"
+        echo "[$(date '+%Y-%m-%d %H:%M:%S')]: CS:GO DS is currently up-to-date" >> /var/log/csgodsupdates
+fi
