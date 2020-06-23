@@ -5,7 +5,7 @@ TERM=xterm
 DIR="/root"
 URL="https://plex.tv/pms/downloads/5.json"
 RPM=$(ls $DIR | grep plexmediaserver)
-RUNNING=$(ps -ef | grep com.plexapp.system | grep server-version | cut -d" " -f25 | cut -d"-" -f1)
+RUNNING=$(/usr/lib/plexmediaserver/"Plex Media Server" --version | cut -d"v" -f2 | cut -d"-" -f1)
 JSON_RESP=$(wget -cq $URL -O -)
 PLEX_URL=$(echo $JSON_RESP | jq -r '.[].Linux.releases[]? | select(.distro=="redhat") | select(.build=="linux-x86_64").url')
 NEW=$(echo $PLEX_URL | cut -d"/" -f7)
