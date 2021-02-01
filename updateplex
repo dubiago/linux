@@ -1,5 +1,4 @@
 #!/bin/bash
-#Built for RedHat variants
 #Assumes that current version RPM is going to be squirreled away in /root, away from prying children
 TERM=xterm
 DIR="/root"
@@ -7,6 +6,7 @@ URL="https://plex.tv/pms/downloads/5.json"
 RPM=$(ls $DIR | grep plexmediaserver)
 RUNNING=$(/usr/lib/plexmediaserver/"Plex Media Server" --version | cut -d"v" -f2 | cut -d"-" -f1)
 JSON_RESP=$(wget -cq $URL -O -)
+#Edit distro here (redhat, debian, etc)
 PLEX_URL=$(echo $JSON_RESP | jq -r '.[].Linux.releases[]? | select(.distro=="redhat") | select(.build=="linux-x86_64").url')
 NEW=$(echo $PLEX_URL | cut -d"/" -f7)
 CURRENT=$(echo $JSON_RESP | jq -r '.computer[] | select(.id=="linux").version' | cut -d"-" -f1)
