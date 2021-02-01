@@ -1,5 +1,5 @@
 #!/bin/bash
-#Assumes that current version RPM is going to be squirreled away in /root, away from prying children
+#Assumes that current version RPM/DEB/etc is going to be squirreled away in /root, away from prying children
 TERM=xterm
 DIR="/root"
 URL="https://plex.tv/pms/downloads/5.json"
