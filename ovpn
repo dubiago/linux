@@ -3,7 +3,7 @@
 ME=`basename "$0"`
 OVPN_PROFILE="$HOME/ovpn/$2.ovpn"
 
-[[ $# -eq 0 ]] || ([[ $1 -ne "start" ]] && [[ $# -eq 2 ]]) || ([[ $1 -ne "stop" ]] && [[ $# -eq 2 ]])&& { echo "Usage: $ME [start|stop|status] profile-name"; exit 1; }
+[[ $# -eq 0 || $# -gt 2 ]] || ([[ $# -eq 1 && "$1" != "status" ]]) || ([[ $# -eq 2 && "$1" != "start" && "$1" != "stop"  && "$1" != "restart" && "$1" != "stats" ]]) && { echo "Usage: $ME [(start|stop|restart|stats) profile-name | status]"; exit 1; } 
 
 if [[ $1 == "start" ]]
 then
@@ -15,7 +15,17 @@ then
 	openvpn3 session-manage --config "$OVPN_PROFILE" --disconnect
 fi
 
+if [[ $1 == "restart" ]]
+then
+        openvpn3 session-manage --config "$OVPN_PROFILE" --restart
+fi
+
 if [[ $1 == "status" ]]
 then
 	openvpn3 sessions-list
+fi
+
+if [[ $1 == "stats" ]]
+then
+        openvpn3 session-stats --config "$OVPN_PROFILE" 
 fi
