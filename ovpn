@@ -1,0 +1,21 @@
+#!/bin/bash
+#Assumes you have your config files in an ovpn subdirectory under $HOME
+ME=`basename "$0"`
+OVPN_PROFILE="$HOME/ovpn/$2.ovpn"
+
+[[ $# -eq 0 ]] || ([[ $1 -ne "start" ]] && [[ $# -eq 2 ]]) || ([[ $1 -ne "stop" ]] && [[ $# -eq 2 ]])&& { echo "Usage: $ME [start|stop|status] profile-name"; exit 1; }
+
+if [[ $1 == "start" ]]
+then
+	openvpn3 session-start --config "$OVPN_PROFILE"
+fi
+
+if [[ $1 == "stop" ]]
+then
+	openvpn3 session-manage --config "$OVPN_PROFILE" --disconnect
+fi
+
+if [[ $1 == "status" ]]
+then
+	openvpn3 sessions-list
+fi
