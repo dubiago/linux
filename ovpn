@@ -3,19 +3,19 @@
 ME=`basename "$0"`
 OVPN_PROFILE="$HOME/ovpn/$2.ovpn"
 
-[[ $# -eq 0 || $# -gt 2 ]] || ([[ $# -eq 1 && "$1" != "status" ]]) || ([[ $# -eq 2 && "$1" != "start" && "$1" != "stop"  && "$1" != "restart" && "$1" != "stats" ]]) && { echo "Usage: $ME [(start|stop|restart|stats) profile-name | status]"; exit 1; } 
+[[ $# -eq 0 || $# -gt 2 ]] || ([[ $# -eq 1 && "$1" != "status" && "$1" != "connected" ]]) || ([[ $# -eq 2 && "$1" != "connect" && "$1" != "disconnect"  && "$1" != "reconnect" && "$1" != "stats" ]]) && { echo "Usage: $ME [(connect|disconnect|reconnect|stats) profile-name | status]"; exit 1; } 
 
-if [[ $1 == "start" ]]
+if [[ $1 == "connect" ]]
 then
 	openvpn3 session-start --config "$OVPN_PROFILE"
 fi
 
-if [[ $1 == "stop" ]]
+if [[ $1 == "disconnect" ]]
 then
 	openvpn3 session-manage --config "$OVPN_PROFILE" --disconnect
 fi
 
-if [[ $1 == "restart" ]]
+if [[ $1 == "reconnect" ]]
 then
         openvpn3 session-manage --config "$OVPN_PROFILE" --restart
 fi
@@ -28,4 +28,11 @@ fi
 if [[ $1 == "stats" ]]
 then
         openvpn3 session-stats --config "$OVPN_PROFILE" 
+fi
+
+if [[ $1 == "connected" ]]
+then
+	O_FULL_PROFILE=`openvpn3 sessions-list | grep Config | cut -d' ' -f4`
+	O_PROFILE=`echo "${O_FULL_PROFILE}" | cut -d'/' -f5 | cut -d'.' -f1`
+	echo $O_PROFILE
 fi
