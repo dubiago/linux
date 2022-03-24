@@ -3,7 +3,7 @@
 ME=`basename "$0"`
 OVPN_PROFILE="$HOME/ovpn/$2.ovpn"
 
-[[ $# -eq 0 || $# -gt 2 ]] || ([[ $# -eq 1 && "$1" != "status" && "$1" != "connected" ]]) || ([[ $# -eq 2 && "$1" != "connect" && "$1" != "disconnect"  && "$1" != "reconnect" && "$1" != "stats" ]]) && { echo "Usage: $ME [(connect|disconnect|reconnect|stats) profile-name | status]"; exit 1; } 
+[[ $# -eq 0 || $# -gt 2 ]] || ([[ $# -eq 1 && "$1" != "status" && "$1" != "connected" && "$1" != "profiles" ]]) || ([[ $# -eq 2 && "$1" != "connect" && "$1" != "disconnect"  && "$1" != "reconnect" && "$1" != "stats" ]]) && { echo "Usage: $ME [(connect|disconnect|reconnect|stats) profile-name | status | connected | profiles]"; exit 1; } 
 
 if [[ $1 == "connect" ]]
 then
@@ -35,4 +35,9 @@ then
 	O_FULL_PROFILE=`openvpn3 sessions-list | grep Config | cut -d' ' -f4`
 	O_PROFILE=`echo "${O_FULL_PROFILE}" | cut -d'/' -f5 | cut -d'.' -f1`
 	echo $O_PROFILE
+fi
+
+if [[ $1 == "profiles" ]]
+then
+	ls $HOME/ovpn | cut -d"." -f 1
 fi
